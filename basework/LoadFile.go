@@ -1,30 +1,30 @@
 package basework
 
-import(
+import (
 	"bufio"
-	"os"
 	"fmt"
+	"os"
 )
 
-func LoadFile2List(filename string) ([]string, error){
+func LoadFile2List(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	CheckErr(err)
-	file.Close()
+	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 
 	var lines []string
 
-	for scanner.Scan(){
+	for scanner.Scan() {
 
 		line := scanner.Text()
 
-		if line != ""{
+		if line != "" {
 			lines = append(lines, line)
 		}
 
-		if err := scanner.Err(); err != nil{
-			return nil, fmt.Errorf("error: %v",err)
+		if err := scanner.Err(); err != nil {
+			return nil, fmt.Errorf("error: %v", err)
 		}
 
 	}
