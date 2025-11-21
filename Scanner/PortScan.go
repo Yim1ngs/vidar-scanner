@@ -13,7 +13,7 @@ func PortScan(targetIp string, begin_port int, end_port int) []int {
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 
-	concurrencylimit := 60
+	concurrencylimit := 3000
 	rateLimit := 3 * time.Millisecond
 
 	pool, err := ants.NewPool(concurrencylimit)
@@ -39,7 +39,7 @@ func PortScan(targetIp string, begin_port int, end_port int) []int {
 			}
 		})
 
-		//if port%500 == 0 {
+		//if port%1000 == 0 {
 		//	fmt.Printf("%d\n", port)
 		//}
 	}
