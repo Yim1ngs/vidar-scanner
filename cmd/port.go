@@ -22,7 +22,7 @@ var portCmd = &cobra.Command{
 	Short: "port scanning",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		BeginPort, EndPort, err := basework.DealPort(PortRange)
+		StartPort, EndPort, err := basework.ParsePort(PortRange)
 
 		if err != nil {
 			fmt.Println(err)
@@ -31,9 +31,9 @@ var portCmd = &cobra.Command{
 
 		fmt.Printf("[INFO] 开始端口扫描...\n")
 		fmt.Printf("[INFO] 目标 URL: %s\n", PortTargetUrl)
-		fmt.Printf("[INFO] 端口范围: %d-%d\n", BeginPort, EndPort)
+		fmt.Printf("[INFO] 端口范围: %d-%d\n", StartPort, EndPort)
 
-		scanner.PortScan(PortTargetUrl, BeginPort, EndPort)
+		scanner.PortScan(PortTargetUrl, StartPort, EndPort)
 
 		fmt.Printf("[INFO] 端口扫描结束。\n")
 

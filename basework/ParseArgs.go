@@ -2,14 +2,15 @@ package basework
 
 import (
 	"fmt"
+	"net"
 	"strconv"
 	"strings"
 )
 
 // 参数处理全部丢到这个文件里面吧
 
-func DealPort(s string) (int, int, error) {
-	BeginPort := 0
+func ParsePort(s string) (int, int, error) {
+	StartPort := 0
 	EndPort := 65535
 
 	PartsPort := strings.Split(s, "-")
@@ -19,29 +20,32 @@ func DealPort(s string) (int, int, error) {
 		return 0, 0, fmt.Errorf("Parse error: invalid port number")
 	}
 
-	BeginPort, _ = strconv.Atoi(PartsPort[0])
+	StartPort, _ = strconv.Atoi(PartsPort[0])
 	EndPort, _ = strconv.Atoi(PartsPort[1])
 
-	if BeginPort < 0 || BeginPort > EndPort || EndPort > 65535 {
+	if StartPort < 0 || StartPort > EndPort || EndPort > 65535 {
 		return 0, 0, fmt.Errorf("Parse error: invalid port number")
 	}
-	return BeginPort, EndPort, nil
+	return StartPort, EndPort, nil
 }
 
-func DealCIDRIP(s string) (string, int, error) {
-	parts := strings.Split(s, "/")
-	ip := parts[0]
-	CIDR, err := strconv.Atoi(parts[1])
-
+func ParseCIDR(cidr string) (string, string, error) {
+	_, ipnet, err := net.ParseCIDR(cidr)
 	if err != nil {
-		return "", 0, err
+		return "", "", fmt.Errorf("invalid CIDR: %v", err)
 	}
 
-	fmt.Println(CIDR)
+	StartIP := ipnet.IP.Mask(ipnet.Mask)
 
-	if !(CIDR%8 == 0 && CIDR <= 24 && CIDR >= 0) {
-		return "", 0, fmt.Errorf("Parse error: invalid CIDR IP")
+	ip := ipnet.IP.To4()
+	mask := ipnet.Mask
+
+	broadcast := make(net.IP, len(ip))
+	for i := 0; i < 4; i++ {
+		broadcast[i] = ip[i] | ^mask[i]
 	}
 
-	return ip, CIDR, nil
+	EndIP := broadcast
+
+	return StartIP.String(), EndIP.String(), nil
 }
