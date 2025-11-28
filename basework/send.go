@@ -25,6 +25,7 @@ func SendMessage(client *http.Client, finalpath string) error {
 	defer rep.Body.Close()
 
 	//if rep.StatusCode == 200 || rep.StatusCode == 302 {
+	//if ! basework.Do404Diff() {
 	if rep.StatusCode != 404 {
 		fmt.Printf("[found] %-6d %s\n", rep.StatusCode, finalpath)
 	}
