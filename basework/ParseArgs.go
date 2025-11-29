@@ -10,18 +10,32 @@ import (
 // 参数处理全部丢到这个文件里面吧
 
 func ParsePort(s string) (int, int, error) {
-	StartPort := 0
-	EndPort := 65535
+	StartPort, EndPort := 0, 65535
+	var err error
 
 	PartsPort := strings.Split(s, "-")
 	//fmt.Println(PartsPort)
+
+	if len(PartsPort) == 1 {
+		if port, err := strconv.Atoi(PartsPort[0]); err == nil {
+			return port, port, nil
+		}
+		return 0, 0, fmt.Errorf("Parse error: invalid port number")
+	}
 
 	if len(PartsPort) != 2 {
 		return 0, 0, fmt.Errorf("Parse error: invalid port number")
 	}
 
-	StartPort, _ = strconv.Atoi(PartsPort[0])
-	EndPort, _ = strconv.Atoi(PartsPort[1])
+	StartPort, err = strconv.Atoi(PartsPort[0])
+	if err != nil {
+		return 0, 0, fmt.Errorf("Parse error: invalid start port")
+	}
+
+	EndPort, err = strconv.Atoi(PartsPort[1])
+	if err != nil {
+		return 0, 0, fmt.Errorf("Parse error: invalid end port")
+	}
 
 	if StartPort < 0 || StartPort > EndPort || EndPort > 65535 {
 		return 0, 0, fmt.Errorf("Parse error: invalid port number")

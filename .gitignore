@@ -1,3 +1,5 @@
 dic.txt
 dicc.txt
-.idea
+/idea/
+/fastText/
+/cmd/debug.go
